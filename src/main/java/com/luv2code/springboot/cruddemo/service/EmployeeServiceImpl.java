@@ -1,12 +1,12 @@
 package com.luv2code.springboot.cruddemo.service;
 
+import com.luv2code.springboot.cruddemo.exceptions.EmployeeNotFoundException;
 import com.luv2code.springboot.cruddemo.repository.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -25,19 +25,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findById(int theId) {
-        Optional<Employee> result = employeeRepository.findById(theId);
-
-        Employee theEmployee = null;
-
-        if (result.isPresent()) {
-            theEmployee = result.get();
-        }
-        else {
-            // we didn't find the employee
-            throw new RuntimeException("Did not find employee id - " + theId);
-        }
-
-        return theEmployee;
+        return employeeRepository
+                .findById(theId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Did not find employee id - " + theId));
     }
 
     @Override

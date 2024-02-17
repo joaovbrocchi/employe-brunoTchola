@@ -3,6 +3,8 @@ package com.luv2code.springboot.cruddemo.rest;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,15 +29,13 @@ public class EmployeeRestController {
     // add mapping for GET /employees/{employeeId}
 
     @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable int employeeId) {
+    public ResponseEntity<Employee> getEmployee(@PathVariable int employeeId) {
 
         Employee theEmployee = employeeService.findById(employeeId);
 
-        if (theEmployee == null) {
-            throw new RuntimeException("Employee id not found - " + employeeId);
-        }
-
-        return theEmployee;
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(theEmployee);
     }
 
     // add mapping for POST /employees - add new employee
@@ -46,7 +46,8 @@ public class EmployeeRestController {
         // also just in case they pass an id in JSON ... set id to 0
         // this is to force a save of new item ... instead of update
 
-        theEmployee.setId(0);
+        // Para evitar seu comentario acima devemos criar um DTO de request
+        // Criarei aqui
 
         Employee dbEmployee = employeeService.save(theEmployee);
 
